@@ -32,6 +32,12 @@ async fn metrics() -> Json<Metrics>{
     let used_swap = sys.used_swap();
     println!("Used swap: {}", used_swap);
 
+    // TODO
+    // GET DISKS, DISKS_USAGE, DISKS HEALTH
+    // GET IAGON NODE STATUS
+    // GET IAGON NODE COMMITED VALUE
+    // GET TEMPERATURES
+
     Json(Metrics{
         cpu_usage,
         total_memory,
