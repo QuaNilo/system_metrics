@@ -1,4 +1,6 @@
 mod routes;
+mod utils;
+mod data_classes;
 
 #[tokio::main]
 async fn main() {
