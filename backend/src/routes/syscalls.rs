@@ -5,16 +5,24 @@ use crate::utils::system_info_util::{*};
 
 pub fn router() -> Router {
     Router::new()
-        .route("/metrics", get(metrics))
+        .route("/info", get(system_info))
 }
 
-async fn metrics() -> Json<Metrics>{
+async fn system_info() -> Json<Metrics>{
     let mut system = SystemInfo::new();
-    
-    // TODO
-    // GET DISKS, DISKS_USAGE, DISKS HEALTH
-    // GET IAGON NODE STATUS
-    // GET IAGON NODE COMMITED VALUE
-    // GET TEMPERATURES
+    // TODO GET COMPONENTS TEMPERATURES
     Json(system.collect_metrics())
 }
+
+async fn health_check() {
+    // TODO GET DISKS HEALTH
+}
+async fn iagon_status() {
+    //TODO GET IAGON NODE STATUS
+}
+
+async fn get_system_uptime() {
+    // TODO GET UPTIME
+}
+
+
