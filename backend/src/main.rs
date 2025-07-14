@@ -8,7 +8,7 @@ async fn main() {
     dotenv::dotenv().ok();
 
     let app = routes::router();
-    let address : &str = "127.0.0.1:3000";
+    let address : &str = "0.0.0.0:50000";
     let listener = tokio::net::TcpListener::bind(address).await.unwrap();
     println!("Listening on http://{}", address);
 

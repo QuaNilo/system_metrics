@@ -1,0 +1,38 @@
+services:
+  be:
+    image: system_metrics_be
+#    env_file:
+#      - .env
+#    depends_on:
+#      - mongo
+#      - postgres
+    build:
+      context: backend/
+    ports:
+      - "50000:50000"
+    container_name: system_metrics_be
+    networks:
+      - system_metrics_network
+
+  fe:
+    image: system_metrics_fe
+#    env_file:
+#      - .env
+#    depends_on:
+#      - mongo
+#      - postgres
+    build:
+      context: frontend/
+    ports:
+      - "50001:50001"
+    container_name: system_metrics_fe
+    networks:
+      - system_metrics_network
+
+
+networks:
+  system_metrics_network:
+    driver: bridge
+
+volumes:
+  postgresql:
