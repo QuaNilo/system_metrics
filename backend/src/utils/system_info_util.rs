@@ -7,12 +7,14 @@ pub struct SystemInfo {
 
 impl SystemInfo {
     pub fn new() -> Self {
-        let mut sys = System::new_all();
-        sys.refresh_all();
+        let mut sys = System::new_with_specifics(
+            RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
+        );
         SystemInfo { system: sys}
     }
 
     fn refresh(&mut self){
+        std::thread::sleep(sysinfo::MINIMUM_CPU_UPDATE_INTERVAL);
         self.system.refresh_all();
     }
 
