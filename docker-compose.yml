@@ -1,38 +1,60 @@
 services:
+
+  postgres:
+    image: postgres:17.5-alpine3.22
+    container_name: system_metrics_postgres
+    restart: unless-stopped
+    environment:
+     POSTGRES_USER: ${METRICS_POSTGRES_USER}
+     POSTGRES_PASSWORD: ${METRICS_POSTGRES_PASSWORD}
+     POSTGRES_DB: ${METRICS_POSTGRES_DB}
+    volumes:
+     - metrics_postgres_data:/var/lib/postgresql/data
+    networks:
+     - system_metrics_network
+    ports:
+      - "50002:5432"
+    deploy:
+     resources:
+       limits:
+         cpus: "1"
+         memory: 1024M
+
   be:
     image: system_metrics_be
-#    env_file:
-#      - .env
-#    depends_on:
-#      - mongo
-#      - postgres
+    env_file:
+      - .env
+    depends_on:
+      - postgres
     build:
       context: backend/
     ports:
       - "50000:50000"
+    profiles:
+      - full
     container_name: system_metrics_be
     networks:
       - system_metrics_network
 
   fe:
     image: system_metrics_fe
-#    env_file:
-#      - .env
-#    depends_on:
-#      - mongo
-#      - postgres
+    env_file:
+      - .env
+    depends_on:
+      - postgres
     build:
       context: frontend/
     ports:
       - "50001:50001"
+    profiles:
+      - full
     container_name: system_metrics_fe
     networks:
       - system_metrics_network
-
 
 networks:
   system_metrics_network:
     driver: bridge
 
 volumes:
-  postgresql:
+  metrics_postgres_data:

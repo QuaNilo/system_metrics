@@ -1,5 +1,6 @@
 use sysinfo::{Disks, Disk, System, RefreshKind, CpuRefreshKind, Cpu};
 use crate::data_classes::system_info::{CpuInfo, DiskInfo, MemoryInfo, Metrics, SwapInfo};
+use anyhow::{Result, Context};
 
 pub struct SystemInfo {
     system: System,
@@ -13,23 +14,24 @@ impl SystemInfo {
         SystemInfo { system: sys}
     }
 
-    fn refresh(&mut self){
+    async fn refresh(&mut self){
         std::thread::sleep(sysinfo::MINIMUM_CPU_UPDATE_INTERVAL);
         self.system.refresh_all();
     }
 
-    pub fn collect_metrics(&mut self) -> Metrics {
-        self.refresh();
-        Metrics {
-            cpu_info: self.cpu_info(),
-            memory_info: self.memory_info(),
-            disk_info: self.disk_info(),
-            swap_info: self.swap_info(),
-        }
+    pub async fn collect_metrics(&mut self) -> Result<Metrics, String> {
+        self.refresh().await;
+        let metrics = Metrics {
+            cpu_info: self.cpu_info().await?,
+            memory_info: self.memory_info().await?,
+            disk_info: self.disk_info().await?,
+            swap_info: self.swap_info().await?, 
+        };
+        Ok(metrics)
     }
 
-    pub fn cpu_info(&self) -> Vec<CpuInfo> {
-        self.system
+    pub async fn cpu_info(&self) -> Result<Vec<CpuInfo>, String> {
+        let cpu_info = self.system
             .cpus()
             .iter()
             .map(|cpu| CpuInfo{
@@ -37,21 +39,26 @@ impl SystemInfo {
                 usage: cpu.cpu_usage(),
                 frequency: cpu.frequency(),
                 vendor_id: cpu.vendor_id().to_string()
-            }).collect()
+            }).collect();
+        Ok(cpu_info)
     }
 
-    pub fn swap_info(&self) -> SwapInfo {
+    pub async fn swap_info(&self) -> Result<SwapInfo, String> {
         let free_swap: u64= self.system.free_swap();
         let used_swap: u64 = self.system.used_swap();
-        SwapInfo {
+        let swap_info = SwapInfo {
             free_swap,
             used_swap
-        }
+        };
+        Ok(swap_info)
     }
 
-    pub fn disk_info(&self) -> Vec<DiskInfo> {
+    pub async fn disk_info(&self) -> Result<Vec<DiskInfo>, String> {
         let disks = Disks::new_with_refreshed_list();
-        disks
+        if disks.list().is_empty() {
+            return Err("No disks found or failed to read".into());
+        }
+        let info = disks
             .list()
             .iter()
             .map(|disk| {
@@ -65,15 +72,17 @@ impl SystemInfo {
                     available_space: available,
                     used_space: used,
                 }
-            }).collect()
+            }).collect();
+        Ok(info)
     }
 
-    pub fn memory_info(&self) -> MemoryInfo {
+    pub async fn memory_info(&self) -> Result<MemoryInfo, String> {
         let total_memory = self.system.total_memory() / 1024;
         let used_memory = self.system.used_memory() / 1024;
-        MemoryInfo {
+        let memory_info = MemoryInfo {
             total_memory_mb: total_memory,
             used_memory_mb: used_memory,
-        }
+        };
+        Ok(memory_info)
     }
 }

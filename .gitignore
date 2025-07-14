@@ -22,7 +22,7 @@ target
 
 
 # Added by cargo
-
+.env
 /target
 ./idea
 .idea
