@@ -34,3 +34,11 @@ pub struct MemoryInfo {
     pub total_memory_mb: u64,
     pub used_memory_mb: u64
 }
+
+#[derive(Debug, Serialize)]
+pub struct ComponentTemperatures {
+    pub name: Option<String>,
+    pub temperature: Option<f32>,
+    pub max_temperature: Option<f32>,
+    pub threshold_critical: Option<f32>
+}

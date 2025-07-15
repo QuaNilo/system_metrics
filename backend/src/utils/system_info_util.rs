@@ -1,6 +1,6 @@
-use sysinfo::{Disks, Disk, System, RefreshKind, CpuRefreshKind, Cpu};
-use crate::data_classes::system_info::{CpuInfo, DiskInfo, MemoryInfo, Metrics, SwapInfo};
-use anyhow::{Result, Context};
+use sysinfo::{Disks, System, RefreshKind, CpuRefreshKind, Components};
+use crate::data_classes::system_info::{ComponentTemperatures, CpuInfo, DiskInfo, MemoryInfo, Metrics, SwapInfo};
+use anyhow::{Result};
 
 pub struct SystemInfo {
     system: System,
@@ -38,7 +38,7 @@ impl SystemInfo {
                 name: cpu.name().to_string(),
                 usage: cpu.cpu_usage(),
                 frequency: cpu.frequency(),
-                vendor_id: cpu.vendor_id().to_string()
+                vendor_id: cpu.vendor_id().to_string(),
             }).collect();
         Ok(cpu_info)
     }
@@ -85,4 +85,23 @@ impl SystemInfo {
         };
         Ok(memory_info)
     }
+
+    pub async fn temperatures(&mut self) -> Result<Vec<ComponentTemperatures>> {
+        self.refresh().await;
+        let components = Components::new_with_refreshed_list();
+        println!("=> Components:");
+        let mut component_temps = Vec::new();
+        for component in &components {
+            println!("{component:#?}");
+            component_temps.push(ComponentTemperatures {
+                name: Some(component.label().to_string()),
+                threshold_critical: component.critical(),
+                temperature: component.temperature(),
+                max_temperature: component.max(),
+            });
+        }
+        Ok(component_temps)
+    }
+
+
 }

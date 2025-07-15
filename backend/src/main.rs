@@ -3,8 +3,6 @@ mod utils;
 mod data_classes;
 mod config;
 mod db;
-
-use std::env;
 use tokio::net::TcpListener;
 use anyhow::{Result, Context};
 use crate::config::init_settings;
@@ -28,3 +26,7 @@ async fn main() -> Result<()> {
     axum::serve(listener, app).await.unwrap();
     Ok(())
 }
+
+// TODO Create database tables
+// TODO Create logic to scrape metrics every X secs
+// TODO GET IAGON DATA
