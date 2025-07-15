@@ -42,3 +42,10 @@ pub struct ComponentTemperatures {
     pub max_temperature: Option<f32>,
     pub threshold_critical: Option<f32>
 }
+
+#[derive(Debug, Serialize)]
+pub struct SystemUptime {
+    pub seconds: u64,
+    pub minutes: u64,
+    pub hours: u64,
+}
