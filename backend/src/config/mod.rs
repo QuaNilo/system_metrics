@@ -17,14 +17,34 @@ impl Postgres {
 
 
 #[derive(Debug)]
+pub struct Iagon{
+    pub cli_path: String,
+    pub get_info: String,
+    pub get_node_status: String,
+}
+
+impl Iagon {
+    fn from_env() -> Self {
+        Iagon {
+            cli_path: env::var("IAGON_CLI_PATH").expect("IAGON_CLI_PATH must be set"),
+            get_info: env::var("GET_INFO").unwrap_or("false".to_string()),
+            get_node_status: env::var("GET_NODE_STATUS").unwrap_or("false".to_string())
+        }
+    }
+}
+
+
+#[derive(Debug)]
 pub struct Settings {
-    pub postgres: Postgres
+    pub postgres: Postgres,
+    pub iagon: Iagon
 }
 
 impl Settings {
     pub fn new() -> Self {
         Settings {
-            postgres: Postgres::from_env()
+            postgres: Postgres::from_env(),
+            iagon: Iagon::from_env()
         }
     }
 }
