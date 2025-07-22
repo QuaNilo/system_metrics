@@ -48,12 +48,25 @@ impl Iagon {
     }
 }
 
+#[derive(Debug)]
+pub struct App{
+    pub secret: String,
+}
+
+impl App {
+    fn from_env() -> Self {
+        App {
+            secret: env::var("APP_SECRET").expect("APP_SECRET must be set"),
+        }
+    }
+}
 
 #[derive(Debug)]
 pub struct Settings {
     pub postgres: Postgres,
     pub iagon: Iagon,
-    pub cronjob: CronJob,   
+    pub cronjob: CronJob,
+    pub app: App,
 }
 
 impl Settings {
@@ -61,7 +74,8 @@ impl Settings {
         Settings {
             postgres: Postgres::from_env(),
             iagon: Iagon::from_env(),
-            cronjob: CronJob::from_env(),       
+            cronjob: CronJob::from_env(),
+            app: App::from_env()
         }
     }
 }

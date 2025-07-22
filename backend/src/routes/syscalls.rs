@@ -1,12 +1,10 @@
 use std::fs::File;
 use std::io::Read;
-use std::time::Duration;
 use axum::{Json, Router};
 use axum::routing::{get};
 use crate::data_classes::system_info::{Metrics, ComponentTemperatures, SystemUptime};
-use anyhow::{Context, Error, Result};
+use anyhow::{Result};
 use axum::http::StatusCode;
-use tokio::io::AsyncReadExt;
 use crate::utils::system_info_util::SystemInfo;
 
 pub fn router() -> Router {

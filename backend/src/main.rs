@@ -46,9 +46,9 @@ async fn main() -> Result<()> {
 
 // TODO Create database tables
 // TODO Create logic to scrape metrics every X secs
+// TODO Create a Auth system
 
 async fn cronjobs(){
-    // println!("Running cronjobs");
     run_system_jobs().await;
     run_iagon_jobs().await;
 }
