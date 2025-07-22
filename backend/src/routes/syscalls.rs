@@ -16,7 +16,7 @@ pub fn router() -> Router {
         .route("/uptime", get(get_system_uptime))
 }
 
-async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
+pub async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
     let mut system = SystemInfo::new();
     let metrics = system.collect_metrics()
         .await
@@ -24,7 +24,7 @@ async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
     Ok(Json(metrics))
 }
 
-async fn component_temperatures() -> Result<Json<Vec<ComponentTemperatures>>, (StatusCode, String)>{
+pub async fn component_temperatures() -> Result<Json<Vec<ComponentTemperatures>>, (StatusCode, String)>{
     let mut system_util = SystemInfo::new();
     let component_temps = system_util.temperatures()
         .await
@@ -36,11 +36,8 @@ async fn component_temperatures() -> Result<Json<Vec<ComponentTemperatures>>, (S
 async fn disk_health() {
     // TODO GET DISKS HEALTH
 }
-async fn iagon_status() {
-    //TODO GET IAGON NODE STATUS
-}
 
-async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, String)> {
+pub async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, String)> {
     let mut uptime_str = String::new();
     let mut file = File::open("/proc/uptime").map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     file.read_to_string(&mut uptime_str).map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
@@ -53,7 +50,6 @@ async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, String)>
 
     let uptime_mins = uptime_secs / 60;
     let uptime_hours = uptime_mins / 60;
-    println!("Uptime: \n {uptime_secs:#?} \n {uptime_mins:#?} \n {uptime_hours:#?}", uptime_secs=uptime_secs, uptime_mins=uptime_mins, uptime_hours=uptime_hours);
     Ok(Json(SystemUptime{
         seconds: uptime_secs,
         minutes: uptime_mins,

@@ -13,18 +13,15 @@ pub fn router() -> Router {
         .route("/status", get(iagon_node_response))
 }
 
-pub async fn iagon_node_response() -> impl IntoResponse {
+pub async fn iagon_node_response() -> Result<Json<IagonNodeResponse>, (StatusCode, String)> {
     let settings = get_settings();
     let command = match cli_path().await {
         Ok(command) => command,
-        Err((status, msg)) => return (status, Json(serde_json::json!({ "error": msg }))).into_response(),
+        Err((status, msg)) => return Err((status, msg.to_string())),
     };
+
     let get_node_status = settings.iagon.get_node_status.to_ascii_lowercase() == "true";
     let get_info = settings.iagon.get_info.to_ascii_lowercase() == "true";
-    if (get_node_status) {
-
-    };
-
     let status = if get_node_status {
         match iagon_node_status(command.clone()).await {
             Ok(status) => Some(status),
@@ -36,7 +33,6 @@ pub async fn iagon_node_response() -> impl IntoResponse {
     } else {
         None
     };
-    // TODO INFO NOT WORKING FIX IT
     let info = if get_info {
         match iagon_node_info(command.clone()).await {
             Ok(i) => Some(i),
@@ -49,10 +45,10 @@ pub async fn iagon_node_response() -> impl IntoResponse {
         None
     };
 
-    Json(IagonNodeResponse {
+    Ok(Json(IagonNodeResponse {
         status,
         info,
-    }).into_response()
+    }))
 
 }
 

@@ -89,10 +89,8 @@ impl SystemInfo {
     pub async fn temperatures(&mut self) -> Result<Vec<ComponentTemperatures>> {
         self.refresh().await;
         let components = Components::new_with_refreshed_list();
-        println!("=> Components:");
         let mut component_temps = Vec::new();
         for component in &components {
-            println!("{component:#?}");
             component_temps.push(ComponentTemperatures {
                 name: Some(component.label().to_string()),
                 threshold_critical: component.critical(),

@@ -15,6 +15,21 @@ impl Postgres {
     }
 }
 
+#[derive(Debug)]
+pub struct CronJob{
+    pub interval: u64,    
+}
+
+impl CronJob {
+    fn from_env() -> Self {
+        CronJob {
+            interval: env::var("CRONJOB_INTERVAL_SECS")
+                .expect("CRON_JOB_INTERVAL must be set")
+                .parse()
+                .expect("CRON_JOB_INTERVAL must be a number")
+        }
+    }   
+}
 
 #[derive(Debug)]
 pub struct Iagon{
@@ -37,14 +52,16 @@ impl Iagon {
 #[derive(Debug)]
 pub struct Settings {
     pub postgres: Postgres,
-    pub iagon: Iagon
+    pub iagon: Iagon,
+    pub cronjob: CronJob,   
 }
 
 impl Settings {
     pub fn new() -> Self {
         Settings {
             postgres: Postgres::from_env(),
-            iagon: Iagon::from_env()
+            iagon: Iagon::from_env(),
+            cronjob: CronJob::from_env(),       
         }
     }
 }
