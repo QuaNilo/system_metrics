@@ -2,9 +2,9 @@ use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use axum::{Json, Router};
 use axum::http::StatusCode;
 use axum::routing::{post};
+use chrono::{DateTime, Duration, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow};
-use chrono::{Utc, Duration};
 use jsonwebtoken::{encode, EncodingKey, Header};
 use crate::config::get_settings;
 use crate::db::SQL;
@@ -33,15 +33,15 @@ struct JwtPayload{
 
 
 
-#[derive(Debug, FromRow, Serialize)]
+#[derive(Clone, PartialEq, Debug, FromRow)]
 struct User{
     user_id: i32,
     username: String,
     email: String,
     password_hash: String,
     role_id: i32,
-    created_at: String,
-    updated_at: String,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
     two_factor_enabled: Option<bool>,
     two_factor_secret: Option<String>,
 }
