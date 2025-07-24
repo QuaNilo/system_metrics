@@ -3,6 +3,7 @@ mod utils;
 mod data_classes;
 mod config;
 mod db;
+mod traits;
 
 use std::time::Duration;
 use tokio::net::TcpListener;
