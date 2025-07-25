@@ -45,7 +45,6 @@ pub fn setup_logger() -> Result<(), Box<dyn std::error::Error>> {
         .chain(stdout_logger)
         .chain(file_logger)
         .apply()?;
-
     Ok(())
 }
 
@@ -85,8 +84,7 @@ async fn main() -> Result<()> {
     axum::serve(listener, app).await.unwrap();
     Ok(())
 }
-
-// TODO Only insert DATA to DB on cronjobs, not on the actual requests.
+// TODO Improve refresh of
 // TODO Index database get_latest queries
 // TODO Improve Cronjobs to update according to set variable from frontend
 // TODO add CORS and general protections to API

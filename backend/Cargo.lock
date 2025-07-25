@@ -1919,6 +1919,7 @@ dependencies = [
  "fern",
  "jsonwebtoken",
  "log",
+ "once_cell",
  "serde",
  "sqlx",
  "sysinfo",

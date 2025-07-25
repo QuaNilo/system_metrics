@@ -3,7 +3,6 @@ use axum::routing::get;
 use std::env;
 use anyhow::Result;
 use axum::http::StatusCode;
-use axum::response::IntoResponse;
 use tokio::process::Command;
 use crate::config::get_settings;
 use crate::data_classes::iagon_node::{IagonNodeInfo, IagonNodeResponse, IagonNodeStatus};
@@ -52,7 +51,7 @@ pub async fn iagon_node_response() -> Result<Json<IagonNodeResponse>, (StatusCod
 
 }
 
-async fn cli_path() -> Result<String, (StatusCode, String)>{
+pub async fn cli_path() -> Result<String, (StatusCode, String)>{
     let cli_path = match env::var("IAGON_CLI_PATH") {
         Ok(path) => path,
         Err(_) => return Err((StatusCode::INTERNAL_SERVER_ERROR, "IAGON_CLI_PATH env var is not set".into())),
@@ -60,7 +59,7 @@ async fn cli_path() -> Result<String, (StatusCode, String)>{
     Ok(cli_path)
 }
 
-async fn iagon_node_status(command: String) -> Result<IagonNodeStatus, (StatusCode, String)> {
+pub async fn iagon_node_status(command: String) -> Result<IagonNodeStatus, (StatusCode, String)> {
     let output = match Command::new("sh")
     .arg("-c")
     .arg(format!("{} {}", command, "get:status"))
@@ -83,7 +82,7 @@ async fn iagon_node_status(command: String) -> Result<IagonNodeStatus, (StatusCo
     }
 }
 
-async fn iagon_node_info(command: String) -> Result<IagonNodeInfo, (StatusCode, String)> {
+pub async fn iagon_node_info(command: String) -> Result<IagonNodeInfo, (StatusCode, String)> {
     let output = match Command::new("sh")
     .arg("-c")
     .arg(format!("{} {}", command, "get:info"))
