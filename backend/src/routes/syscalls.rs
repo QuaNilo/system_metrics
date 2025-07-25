@@ -5,6 +5,8 @@ use axum::routing::{get};
 use crate::data_classes::system_info::{Metrics, ComponentTemperatures, SystemUptime};
 use anyhow::{Result};
 use axum::http::StatusCode;
+use crate::db::SQL;
+use crate::traits::traits::Creatable;
 use crate::utils::system_info_util::SystemInfo;
 
 pub fn router() -> Router {
@@ -15,7 +17,7 @@ pub fn router() -> Router {
 }
 
 pub async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
-    let mut system = SystemInfo::new();
+    let mut system = SystemInfo::new().await;
     let metrics = system.collect_metrics()
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e))?;
@@ -23,7 +25,7 @@ pub async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
 }
 
 pub async fn component_temperatures() -> Result<Json<Vec<ComponentTemperatures>>, (StatusCode, String)>{
-    let mut system_util = SystemInfo::new();
+    let mut system_util = SystemInfo::new().await;
     let component_temps = system_util.temperatures()
         .await
         .map_err(|e| {(StatusCode::INTERNAL_SERVER_ERROR, e.to_string())}
@@ -36,6 +38,7 @@ async fn disk_health() {
 }
 
 pub async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, String)> {
+    let sql = SQL::new().await.map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     let mut uptime_str = String::new();
     let mut file = File::open("/proc/uptime").map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     file.read_to_string(&mut uptime_str).map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
@@ -48,11 +51,17 @@ pub async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, Stri
 
     let uptime_mins: i64 = (uptime_secs / 60) as i64;
     let uptime_hours: i64 = uptime_mins / 60;
-    Ok(Json(SystemUptime{
+    let system_uptime = SystemUptime{
         seconds: uptime_secs,
         minutes: uptime_mins,
         hours: uptime_hours,
-    }))
+    };
+    system_uptime
+        .create(&sql.pool)
+        .await
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    Ok(Json(system_uptime))
 }
 
 

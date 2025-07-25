@@ -1,17 +1,23 @@
 use sysinfo::{Disks, System, RefreshKind, CpuRefreshKind, Components};
 use crate::data_classes::system_info::{ComponentTemperatures, CpuInfo, DiskInfo, MemoryInfo, Metrics, SwapInfo};
 use anyhow::{Result};
+use axum::http::StatusCode;
+use sqlx::PgPool;
+use crate::db::SQL;
+use crate::traits::traits::Creatable;
 
 pub struct SystemInfo {
     system: System,
+    pool: PgPool
 }
 
 impl SystemInfo {
-    pub fn new() -> Self {
-        let mut sys = System::new_with_specifics(
+    pub async fn new() -> Self {
+        let mut system = System::new_with_specifics(
             RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
         );
-        SystemInfo { system: sys}
+        let pool = SQL::new().await.expect("Failed to grab db session").pool;
+        SystemInfo { system, pool }
     }
 
     async fn refresh(&mut self){
@@ -31,7 +37,7 @@ impl SystemInfo {
     }
 
     pub async fn cpu_info(&self) -> Result<Vec<CpuInfo>, String> {
-        let cpu_info = self.system
+        let cpu_info: Vec<CpuInfo> = self.system
             .cpus()
             .iter()
             .map(|cpu| CpuInfo{
@@ -40,16 +46,20 @@ impl SystemInfo {
                 frequency: cpu.frequency() as i64,
                 vendor_id: cpu.vendor_id().to_string(),
             }).collect();
+        for cpu in &cpu_info {
+            cpu.create(&self.pool).await.map_err(|e| e.to_string())?;
+        }
         Ok(cpu_info)
     }
 
     pub async fn swap_info(&self) -> Result<SwapInfo, String> {
         let free_swap: i64 = self.system.free_swap() as i64;
         let used_swap: i64 = self.system.used_swap() as i64;
-        let swap_info = SwapInfo {
+        let swap_info: SwapInfo = SwapInfo {
             free_swap,
             used_swap
         };
+        swap_info.create(&self.pool).await.map_err(|e| e.to_string())?;
         Ok(swap_info)
     }
 
@@ -58,7 +68,7 @@ impl SystemInfo {
         if disks.list().is_empty() {
             return Err("No disks found or failed to read".into());
         }
-        let info = disks
+        let info: Vec<DiskInfo> = disks
             .list()
             .iter()
             .map(|disk| {
@@ -73,6 +83,9 @@ impl SystemInfo {
                     used_space: used,
                 }
             }).collect();
+        for disk in &info {
+            disk.create(&self.pool).await.map_err(|e| e.to_string())?;
+        }
         Ok(info)
     }
 
@@ -83,6 +96,10 @@ impl SystemInfo {
             total_memory_mb: total_memory,
             used_memory_mb: used_memory,
         };
+        memory_info
+            .create(&self.pool)
+            .await
+            .map_err(|e| e.to_string())?;
         Ok(memory_info)
     }
 
@@ -98,6 +115,11 @@ impl SystemInfo {
                 max_temperature: component.max(),
             });
         }
+        for component in &component_temps {
+            component
+            .create(&self.pool)
+            .await?;
+    }
         Ok(component_temps)
     }
 

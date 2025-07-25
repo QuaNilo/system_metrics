@@ -17,7 +17,8 @@ impl Postgres {
 
 #[derive(Debug)]
 pub struct CronJob{
-    pub interval: u64,    
+    pub interval: u64,
+    pub enabled: bool,   
 }
 
 impl CronJob {
@@ -26,7 +27,8 @@ impl CronJob {
             interval: env::var("CRONJOB_INTERVAL_SECS")
                 .expect("CRON_JOB_INTERVAL must be set")
                 .parse()
-                .expect("CRON_JOB_INTERVAL must be a number")
+                .expect("CRON_JOB_INTERVAL must be a number"),
+            enabled: env::var("CRONJOB_ENABLED").expect("CRONJOB_ENABLED must be set") == "true",
         }
     }   
 }
@@ -62,11 +64,27 @@ impl App {
 }
 
 #[derive(Debug)]
+pub struct Logging {
+    pub rust_log: String,
+    pub rust_log_file: String,
+}
+
+impl Logging {
+    fn from_env() -> Self {
+        Logging {
+            rust_log: env::var("RUST_LOG").expect("RUST_LOG env var must be set"),
+            rust_log_file: env::var("RUST_LOG_FILE").expect("RUST_LOG_FILE env var must be set"),
+        }   
+    }
+}
+
+#[derive(Debug)]
 pub struct Settings {
     pub postgres: Postgres,
     pub iagon: Iagon,
     pub cronjob: CronJob,
     pub app: App,
+    pub logging: Logging,   
 }
 
 impl Settings {
@@ -75,10 +93,12 @@ impl Settings {
             postgres: Postgres::from_env(),
             iagon: Iagon::from_env(),
             cronjob: CronJob::from_env(),
-            app: App::from_env()
+            app: App::from_env(),
+            logging: Logging::from_env(),       
         }
     }
 }
+
 
 static SETTINGS: OnceLock<Settings> = OnceLock::new();
 
