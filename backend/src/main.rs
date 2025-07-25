@@ -87,6 +87,7 @@ async fn main() -> Result<()> {
 }
 
 // TODO Create Insert Data to database tables logic
+// TODO Only insert DATA to DB on cronjobs, not on the actual requests.
 
 async fn cronjobs(){
     run_system_jobs().await;

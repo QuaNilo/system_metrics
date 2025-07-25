@@ -62,10 +62,8 @@ pub async fn login(
         (StatusCode::BAD_REQUEST, "Password or username is incorrect".to_string())
     })?;
 
-    let parsed_hash = PasswordHash::new(&user.password_hash).unwrap();
-    let is_valid: bool = Argon2::default()
-        .verify_password(data.password.as_bytes(), &parsed_hash)
-        .is_ok();
+    let is_valid = verify_password_blocking(data.password.clone(), user.password_hash.clone()).await?;
+
     if !is_valid {
         return Err((StatusCode::BAD_REQUEST, "Password or username is incorrect".to_string()))
     };
@@ -79,6 +77,20 @@ pub async fn login(
         }
 
     }))
+}
+
+async fn verify_password_blocking(
+    password: String,
+    user_hash: String,
+) -> Result<bool, (StatusCode, String)> {
+    let result = tokio::task::spawn_blocking(move || {
+        let parsed_hash = PasswordHash::new(&user_hash).unwrap();
+        Argon2::default().verify_password(password.as_bytes(), &parsed_hash)
+    })
+    .await
+    .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, format!("Task join error: {}", e)))?;
+
+    Ok(result.is_ok())
 }
 
 async fn create_jwt(database_user: &User) -> Result<String, jsonwebtoken::errors::Error>{
