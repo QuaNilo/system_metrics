@@ -24,7 +24,7 @@ pub trait Updatable {
 
 #[async_trait]
 pub trait Deletable {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send;
 }

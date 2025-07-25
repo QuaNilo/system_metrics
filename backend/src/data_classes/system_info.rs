@@ -13,8 +13,8 @@ pub struct Metrics {
 
 #[derive(Debug, Serialize)]
 pub struct SwapInfo {
-    pub free_swap: u64,
-    pub used_swap: u64,
+    pub free_swap: i64,
+    pub used_swap: i64,
 }
 
 #[async_trait]
@@ -37,7 +37,7 @@ impl Creatable for SwapInfo {
 pub struct CpuInfo {
     pub usage: f32,
     pub name: String,
-    pub frequency: u64,
+    pub frequency: i64,
     pub vendor_id: String
 }
 
@@ -62,9 +62,9 @@ impl Creatable for CpuInfo {
 #[derive(Debug, Serialize)]
 pub struct DiskInfo {
     pub name: String,
-    pub total_space: u64,
-    pub available_space: u64,
-    pub used_space: u64,
+    pub total_space: i64,
+    pub available_space: i64,
+    pub used_space: i64,
 }
 
 #[async_trait]
@@ -87,8 +87,8 @@ impl Creatable for DiskInfo {
     
 #[derive(Debug, Serialize)]
 pub struct MemoryInfo {
-    pub total_memory_mb: u64,
-    pub used_memory_mb: u64
+    pub total_memory_mb: i64,
+    pub used_memory_mb: i64
 }
 
 #[async_trait]
@@ -135,9 +135,9 @@ impl Creatable for ComponentTemperatures {
 
 #[derive(Debug, Serialize)]
 pub struct SystemUptime {
-    pub seconds: u64,
-    pub minutes: u64,
-    pub hours: u64,
+    pub seconds: i64,
+    pub minutes: i64,
+    pub hours: i64,
 }
 
 #[async_trait]
@@ -147,10 +147,9 @@ impl Creatable for SystemUptime {
         E: Executor<'e, Database=Postgres> + Send
     {
         sqlx::query!(r#"INSERT INTO system_uptime (seconds, minutes, hours) VALUES ($1, $2, $3)"#,
-            self.usage,
-            self.name,
-            self.frequency,
-            self.vendor_id
+            self.seconds,
+            self.minutes,
+            self.hours,
         )
             .execute(executor)
             .await?;

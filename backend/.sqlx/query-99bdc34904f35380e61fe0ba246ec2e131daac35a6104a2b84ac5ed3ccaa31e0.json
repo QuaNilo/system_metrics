@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE cpu_info SET usage = $1, name = $2, frequency = $3, vendor_id = $4 WHERE id = $5",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Float4",
+        "Text",
+        "Int8",
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "99bdc34904f35380e61fe0ba246ec2e131daac35a6104a2b84ac5ed3ccaa31e0"
+}

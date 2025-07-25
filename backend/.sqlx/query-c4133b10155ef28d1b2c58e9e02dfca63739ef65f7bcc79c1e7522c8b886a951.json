@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE system_uptime SET seconds = $1, minutes = $2, hours = $3 WHERE id = $4",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c4133b10155ef28d1b2c58e9e02dfca63739ef65f7bcc79c1e7522c8b886a951"
+}

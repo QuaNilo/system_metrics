@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE component_temperatures SET name = $1, temperature = $2, max_temperature = $3, threshold_critical = $4 WHERE id = $5",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Float4",
+        "Float4",
+        "Float4",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a794bcec5391a707863a7d1f0043f5fa82919fa0f3429354fa92a8471e36344c"
+}

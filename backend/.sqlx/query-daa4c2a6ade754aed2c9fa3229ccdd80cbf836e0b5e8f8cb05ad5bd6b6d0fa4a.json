@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "DELETE FROM memory_info WHERE id = $1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "daa4c2a6ade754aed2c9fa3229ccdd80cbf836e0b5e8f8cb05ad5bd6b6d0fa4a"
+}

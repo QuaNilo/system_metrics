@@ -66,7 +66,7 @@ pub async fn login(
     let is_valid: bool = Argon2::default()
         .verify_password(data.password.as_bytes(), &parsed_hash)
         .is_ok();
-    if(!is_valid){
+    if !is_valid {
         return Err((StatusCode::BAD_REQUEST, "Password or username is incorrect".to_string()))
     };
 

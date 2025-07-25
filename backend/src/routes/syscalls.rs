@@ -39,15 +39,15 @@ pub async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, Stri
     let mut uptime_str = String::new();
     let mut file = File::open("/proc/uptime").map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
     file.read_to_string(&mut uptime_str).map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-    let uptime_secs = uptime_str
+    let uptime_secs: i64 = uptime_str
         .split(" ")
         .next()
         .ok_or_else(||(StatusCode::INTERNAL_SERVER_ERROR, "Malformed /proc/uptime content: no space-separated values found".to_string()))?
         .parse::<f64>()
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))? as u64;
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))? as i64;
 
-    let uptime_mins = uptime_secs / 60;
-    let uptime_hours = uptime_mins / 60;
+    let uptime_mins: i64 = (uptime_secs / 60) as i64;
+    let uptime_hours: i64 = uptime_mins / 60;
     Ok(Json(SystemUptime{
         seconds: uptime_secs,
         minutes: uptime_mins,

@@ -37,15 +37,15 @@ impl SystemInfo {
             .map(|cpu| CpuInfo{
                 name: cpu.name().to_string(),
                 usage: cpu.cpu_usage(),
-                frequency: cpu.frequency(),
+                frequency: cpu.frequency() as i64,
                 vendor_id: cpu.vendor_id().to_string(),
             }).collect();
         Ok(cpu_info)
     }
 
     pub async fn swap_info(&self) -> Result<SwapInfo, String> {
-        let free_swap: u64= self.system.free_swap();
-        let used_swap: u64 = self.system.used_swap();
+        let free_swap: i64 = self.system.free_swap() as i64;
+        let used_swap: i64 = self.system.used_swap() as i64;
         let swap_info = SwapInfo {
             free_swap,
             used_swap
@@ -62,8 +62,8 @@ impl SystemInfo {
             .list()
             .iter()
             .map(|disk| {
-                let total = disk.total_space();
-                let available = disk.available_space();
+                let total: i64 = disk.total_space() as i64;
+                let available: i64 = disk.available_space() as i64;
                 let used = total - available;
 
                 DiskInfo{
@@ -77,8 +77,8 @@ impl SystemInfo {
     }
 
     pub async fn memory_info(&self) -> Result<MemoryInfo, String> {
-        let total_memory = self.system.total_memory() / 1024;
-        let used_memory = self.system.used_memory() / 1024;
+        let total_memory: i64 = (self.system.total_memory() / 1024) as i64;
+        let used_memory: i64 = (self.system.used_memory() / 1024) as i64;
         let memory_info = MemoryInfo {
             total_memory_mb: total_memory,
             used_memory_mb: used_memory,

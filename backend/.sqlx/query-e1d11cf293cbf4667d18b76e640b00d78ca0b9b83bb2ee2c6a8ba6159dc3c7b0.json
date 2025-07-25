@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE memory_info SET total_memory_mb = $1, used_memory_mb = $2 WHERE id = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e1d11cf293cbf4667d18b76e640b00d78ca0b9b83bb2ee2c6a8ba6159dc3c7b0"
+}

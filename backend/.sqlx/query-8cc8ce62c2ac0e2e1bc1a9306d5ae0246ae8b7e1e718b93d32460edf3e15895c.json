@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE swap_info SET free_swap = $1, used_swap = $2 WHERE id = $3",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "8cc8ce62c2ac0e2e1bc1a9306d5ae0246ae8b7e1e718b93d32460edf3e15895c"
+}

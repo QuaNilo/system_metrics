@@ -1,16 +1,16 @@
 use async_trait::async_trait;
-use chrono::{DateTime, Utc};
 use serde::Serialize;
 use sqlx::{Executor, Postgres};
-use crate::traits::traits::{Creatable, Deletable, Readable, Updatable};
+use sqlx::types::time::OffsetDateTime;
+use crate::traits::traits::{Deletable, Readable, Updatable};
 
 
 #[derive(Debug, Serialize)]
 pub struct SwapInfoDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
-    pub free_swap: u64,
-    pub used_swap: u64,
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
+    pub free_swap: i64,
+    pub used_swap: i64,
 }
 
 #[async_trait]
@@ -48,7 +48,7 @@ impl Updatable for SwapInfoDTO {
 
 #[async_trait]
 impl Deletable for SwapInfoDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
@@ -63,11 +63,11 @@ impl Deletable for SwapInfoDTO {
 
 #[derive(Debug, Serialize)]
 pub struct CpuInfoDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
     pub usage: f32,
     pub name: String,
-    pub frequency: u64,
+    pub frequency: i64,
     pub vendor_id: String
 }
 
@@ -79,7 +79,7 @@ impl Readable for CpuInfoDTO {
     {
         let rows = sqlx::query_as!(
             CpuInfoDTO,
-            r#"SELECT id, timestamp, usage, name, frequency as "frequency!: u64", vendor_id FROM cpu_info"#
+            r#"SELECT id, timestamp, usage, name, frequency as "frequency!: i64", vendor_id FROM cpu_info"#
         ).fetch_all(executor)
             .await?;
         Ok(rows)
@@ -108,7 +108,7 @@ impl Updatable for CpuInfoDTO {
 
 #[async_trait]
 impl Deletable for CpuInfoDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
@@ -123,12 +123,12 @@ impl Deletable for CpuInfoDTO {
 
 #[derive(Debug, Serialize)]
 pub struct DiskInfoDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
     pub name: String,
-    pub total_space: u64,
-    pub available_space: u64,
-    pub used_space: u64,
+    pub total_space: i64,
+    pub available_space: i64,
+    pub used_space: i64,
 }
 
 #[async_trait]
@@ -168,7 +168,7 @@ impl Updatable for DiskInfoDTO {
 
 #[async_trait]
 impl Deletable for DiskInfoDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
@@ -183,10 +183,10 @@ impl Deletable for DiskInfoDTO {
 
 #[derive(Debug, Serialize)]
 pub struct MemoryInfoDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
-    pub total_memory_mb: u64,
-    pub used_memory_mb: u64
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
+    pub total_memory_mb: i64,
+    pub used_memory_mb: i64
 }
 
 #[async_trait]
@@ -224,7 +224,7 @@ impl Updatable for MemoryInfoDTO {
 
 #[async_trait]
 impl Deletable for MemoryInfoDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
@@ -239,8 +239,8 @@ impl Deletable for MemoryInfoDTO {
 
 #[derive(Debug, Serialize)]
 pub struct ComponentTemperaturesDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
     pub name: Option<String>,
     pub temperature: Option<f32>,
     pub max_temperature: Option<f32>,
@@ -284,7 +284,7 @@ impl Updatable for ComponentTemperaturesDTO {
 
 #[async_trait]
 impl Deletable for ComponentTemperaturesDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
@@ -299,11 +299,11 @@ impl Deletable for ComponentTemperaturesDTO {
 
 #[derive(Debug, Serialize)]
 pub struct SystemUptimeDTO {
-    pub id: u64,
-    pub timestamp: DateTime<Utc>,
-    pub seconds: u64,
-    pub minutes: u64,
-    pub hours: u64,
+    pub id: i32,
+    pub timestamp: OffsetDateTime,
+    pub seconds: i64,
+    pub minutes: i64,
+    pub hours: i64,
 }
 
 #[async_trait]
@@ -342,7 +342,7 @@ impl Updatable for SystemUptimeDTO {
 
 #[async_trait]
 impl Deletable for SystemUptimeDTO {
-    async fn delete<'e, E>(id: u32, executor: E) -> Result<(), sqlx::Error>
+    async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send
     {
