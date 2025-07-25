@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, timestamp, usage, name, frequency, vendor_id\n            FROM cpu_info\n            WHERE timestamp > $1\n            ORDER BY timestamp DESC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "usage",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "frequency",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "vendor_id",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "ffc84fa74f41ade07f0c5e7dfbeceab4bf5b126e91c6539bc8041be8f43a75e7"
+}

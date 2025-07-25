@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, timestamp, seconds, minutes, hours\n                FROM system_uptime\n                WHERE timestamp > $1\n                ORDER BY timestamp DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "seconds",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "minutes",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "hours",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "6422976ee6770dbc0c91f6adc2b42250a8163f350edba9042065d3fd0279d6df"
+}

@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, timestamp, name, temperature, max_temperature, threshold_critical\n                FROM component_temperatures\n                WHERE timestamp > $1\n                ORDER BY timestamp DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "temperature",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 4,
+        "name": "max_temperature",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 5,
+        "name": "threshold_critical",
+        "type_info": "Float4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "022b56b1914024d6c112ec30ff805b9d34e0c70e97826bd45b80ffbd88f23025"
+}

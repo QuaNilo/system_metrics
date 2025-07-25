@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, timestamp, total_memory_mb, used_memory_mb\n            FROM memory_info\n            WHERE timestamp > $1\n            ORDER BY timestamp DESC LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "total_memory_mb",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "used_memory_mb",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "53a29d46d307791c97dd6a4ff241fb4f84c7d08fba0781ef57c428525f937803"
+}

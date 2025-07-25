@@ -1,7 +1,8 @@
 use async_trait::async_trait;
+use chrono::{Utc};
+use time::{Duration, OffsetDateTime};
 use serde::Serialize;
-use sqlx::{Executor, Postgres};
-use sqlx::types::time::OffsetDateTime;
+use sqlx::{Error, Executor, Postgres};
 use crate::traits::traits::{Deletable, Readable, Updatable};
 
 
@@ -24,6 +25,25 @@ impl Readable for SwapInfoDTO {
             r#"SELECT id, timestamp, free_swap, used_swap FROM swap_info"#
         ).fetch_all(executor)
             .await?;
+        Ok(rows)
+    }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<SwapInfoDTO> = sqlx::query_as!(
+            SwapInfoDTO,
+            r#"
+            SELECT id, timestamp, free_swap, used_swap
+            FROM swap_info
+            WHERE timestamp > $1
+            ORDER BY timestamp DESC"#,
+            since
+        )
+        .fetch_all(executor)
+        .await?;
         Ok(rows)
     }
 }
@@ -82,6 +102,24 @@ impl Readable for CpuInfoDTO {
             r#"SELECT id, timestamp, usage, name, frequency as "frequency!: i64", vendor_id FROM cpu_info"#
         ).fetch_all(executor)
             .await?;
+        Ok(rows)
+    }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<CpuInfoDTO> = sqlx::query_as!(
+            CpuInfoDTO,
+            r#"SELECT id, timestamp, usage, name, frequency, vendor_id
+            FROM cpu_info
+            WHERE timestamp > $1
+            ORDER BY timestamp DESC"#,
+            since
+        )
+        .fetch_all(executor)
+        .await?;
         Ok(rows)
     }
 }
@@ -144,6 +182,24 @@ impl Readable for DiskInfoDTO {
             .await?;
         Ok(rows)
     }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<DiskInfoDTO> = sqlx::query_as!(
+            DiskInfoDTO,
+            r#"SELECT id, timestamp, name, total_space, available_space, used_space
+            FROM disk_info
+            WHERE timestamp > $1
+            ORDER BY timestamp DESC"#,
+            since
+        )
+        .fetch_all(executor)
+        .await?;
+        Ok(rows)
+    }
 }
 
 #[async_trait]
@@ -200,6 +256,24 @@ impl Readable for MemoryInfoDTO {
             r#"SELECT id, timestamp, total_memory_mb, used_memory_mb FROM memory_info"#
         ).fetch_all(executor)
             .await?;
+        Ok(rows)
+    }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<MemoryInfoDTO> = sqlx::query_as!(
+            MemoryInfoDTO,
+            r#"SELECT id, timestamp, total_memory_mb, used_memory_mb
+            FROM memory_info
+            WHERE timestamp > $1
+            ORDER BY timestamp DESC LIMIT 1"#,
+            since
+        )
+        .fetch_all(executor)
+        .await?;
         Ok(rows)
     }
 }
@@ -260,6 +334,25 @@ impl Readable for ComponentTemperaturesDTO {
             .await?;
         Ok(rows)
     }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<ComponentTemperaturesDTO> = sqlx::query_as!(
+            ComponentTemperaturesDTO,
+            r#"SELECT id, timestamp, name, temperature, max_temperature, threshold_critical
+                FROM component_temperatures
+                WHERE timestamp > $1
+                ORDER BY timestamp DESC
+            "#,
+            since
+        )
+        .fetch_all(executor)
+        .await?;
+        Ok(rows)
+    }
 }
 
 #[async_trait]
@@ -316,6 +409,25 @@ impl Readable for SystemUptimeDTO {
             SystemUptimeDTO,
             r#"SELECT id, timestamp, seconds, minutes, hours FROM system_uptime"#
         ).fetch_all(executor)
+            .await?;
+        Ok(rows)
+    }
+
+    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    where
+        E: Executor<'e, Database=Postgres> + Send
+    {
+        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let rows: Vec<SystemUptimeDTO> = sqlx::query_as!(
+            SystemUptimeDTO,
+            r#"SELECT id, timestamp, seconds, minutes, hours
+                FROM system_uptime
+                WHERE timestamp > $1
+                ORDER BY timestamp DESC
+            "#,
+            since
+        )
+            .fetch_all(executor)
             .await?;
         Ok(rows)
     }

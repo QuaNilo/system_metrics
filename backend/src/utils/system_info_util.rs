@@ -1,7 +1,6 @@
 use sysinfo::{Disks, System, RefreshKind, CpuRefreshKind, Components};
 use crate::data_classes::system_info::{ComponentTemperatures, CpuInfo, DiskInfo, MemoryInfo, Metrics, SwapInfo};
 use anyhow::{Result};
-use axum::http::StatusCode;
 use sqlx::PgPool;
 use crate::db::SQL;
 use crate::traits::traits::Creatable;
@@ -119,7 +118,7 @@ impl SystemInfo {
             component
             .create(&self.pool)
             .await?;
-    }
+        }
         Ok(component_temps)
     }
 

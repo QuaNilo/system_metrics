@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, timestamp, name, total_space, available_space, used_space\n            FROM disk_info\n            WHERE timestamp > $1\n            ORDER BY timestamp DESC",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "timestamp",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "total_space",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "available_space",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "used_space",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "2379d174575b8f15bd30982f16fe81bda055d738944960b5d43155e4d378c493"
+}
