@@ -86,8 +86,11 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-// TODO Create Insert Data to database tables logic
 // TODO Only insert DATA to DB on cronjobs, not on the actual requests.
+// TODO Index database get_latest queries
+// TODO Improve Cronjobs to update according to set variable from frontend
+// TODO add CORS and general protections to API
+// TODO add middleware protection requiring token
 
 async fn cronjobs(){
     run_system_jobs().await;
