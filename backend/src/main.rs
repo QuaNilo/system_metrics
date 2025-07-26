@@ -5,12 +5,13 @@ mod config;
 mod db;
 mod traits;
 mod middlewares;
-
+use tower_http::cors::{CorsLayer, Any};
 use std::time::Duration;
 use tokio::net::TcpListener;
 use anyhow::{Result, Context};
 use fern::Dispatch;
 use chrono::Local;
+use axum::http::method::Method;
 use log::{info, error, LevelFilter};
 use tokio::time;
 use crate::config::{get_settings, init_settings};
@@ -57,6 +58,23 @@ async fn main() -> Result<()> {
     let settings = get_settings();
     let sql = db::SQL::new().await.context("Failed to create DB pool")?;
 
+    let cors = CorsLayer::new()
+        .allow_origin(["http://localhost:5173".parse()?])
+        .allow_methods([
+            Method::GET,
+            Method::POST,
+            Method::PUT,
+            Method::DELETE,
+            Method::OPTIONS,
+        ])
+        .allow_headers([
+            axum::http::header::ORIGIN,
+            axum::http::header::ACCEPT,
+            axum::http::header::CONTENT_TYPE,
+            axum::http::header::AUTHORIZATION, // if needed
+        ])
+        .allow_credentials(true);
+
     info!("Running migrations...");
     MIGRATOR.run(&sql.pool).await.context("Failed to run DB migrations!")?;
     error!("Failed to run DB migrations!");
@@ -78,7 +96,7 @@ async fn main() -> Result<()> {
         info!("Cronjobs are disabled");
     }
 
-    let app = routes::router();
+    let app = routes::router().layer(cors);
     let address : &str = "0.0.0.0:50000";
     let listener = TcpListener::bind(address).await.unwrap();
     println!("Listening on http://{}", address);
@@ -86,7 +104,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 // TODO Improve Cronjobs to update according to set variable from frontend
-// TODO add CORS and general protections to API
 
 async fn cronjobs(){
     let _ = run_system_jobs().await;
