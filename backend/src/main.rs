@@ -85,7 +85,6 @@ async fn main() -> Result<()> {
     axum::serve(listener, app).await.unwrap();
     Ok(())
 }
-// TODO Index database get_latest queries
 // TODO Improve Cronjobs to update according to set variable from frontend
 // TODO add CORS and general protections to API
 

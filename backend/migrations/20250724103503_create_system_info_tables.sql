@@ -49,4 +49,10 @@ CREATE TABLE system_uptime (
     hours BIGINT NOT NULL
 );
 
-
+-- Indexes for fetch performance
+CREATE INDEX idx_cpu_info_timestamp_desc ON cpu_info(timestamp DESC);
+CREATE INDEX idx_disk_info_timestamp_desc ON disk_info(timestamp DESC);
+CREATE INDEX idx_memory_info_timestamp_desc ON memory_info(timestamp DESC);
+CREATE INDEX idx_swap_info_timestamp_desc ON swap_info(timestamp DESC);
+CREATE INDEX idx_component_temperatures_timestamp_desc ON component_temperatures(timestamp DESC);
+CREATE INDEX idx_system_uptime_timestamp_desc ON system_uptime(timestamp DESC);
