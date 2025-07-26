@@ -85,11 +85,9 @@ async fn main() -> Result<()> {
     axum::serve(listener, app).await.unwrap();
     Ok(())
 }
-// TODO Improve refresh of
 // TODO Index database get_latest queries
 // TODO Improve Cronjobs to update according to set variable from frontend
 // TODO add CORS and general protections to API
-// TODO add middleware protection requiring token
 
 async fn cronjobs(){
     let _ = run_system_jobs().await;

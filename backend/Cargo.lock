@@ -1920,6 +1920,7 @@ dependencies = [
  "jsonwebtoken",
  "log",
  "serde",
+ "serde_json",
  "sqlx",
  "sysinfo",
  "time",

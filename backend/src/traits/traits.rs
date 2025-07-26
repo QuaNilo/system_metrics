@@ -11,7 +11,7 @@ pub trait Readable: Sized + Send + Sync {
     where
         E: Executor<'e, Database = Postgres> + Send;
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, sqlx::Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send;
 }

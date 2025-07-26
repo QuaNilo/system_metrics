@@ -2,9 +2,12 @@ use std::fs::File;
 use std::io::Read;
 use axum::{Json, Router};
 use axum::routing::{get};
-use crate::data_classes::system_info::{Metrics, ComponentTemperatures, SystemUptime};
+use crate::data_classes::system_info::{ComponentTemperatures, SystemUptime};
 use anyhow::{Result};
 use axum::http::StatusCode;
+use crate::data_classes::db::system_info::{ComponentTemperaturesDTO, CpuInfoDTO, DiskInfoDTO, MemoryInfoDTO, MetricsDTO, SwapInfoDTO, SystemUptimeDTO};
+use crate::db::SQL;
+use crate::traits::traits::Readable;
 use crate::utils::system_info_util::SystemInfo;
 
 pub fn router() -> Router {
@@ -14,11 +17,47 @@ pub fn router() -> Router {
         .route("/uptime", get(get_system_uptime))
 }
 
-pub async fn system_info() -> Result<Json<Metrics>, (StatusCode, String)>{
-    let mut system = SystemInfo::new().await;
-    let metrics = system.collect_metrics()
-        .await
-        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e))?;
+pub async fn system_info() -> Result<Json<MetricsDTO>, (StatusCode, String)>{
+    let pool = SQL::new().await.map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?.pool;
+    let interval_days: i64 = 1;
+    let swap_info: Vec<SwapInfoDTO> = match SwapInfoDTO::get_latest(&pool, &interval_days).await {
+        Ok(swap_info) => swap_info,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let cpu_info: Vec<CpuInfoDTO> = match CpuInfoDTO::get_latest(&pool, &interval_days).await {
+        Ok(cpu_info) => cpu_info,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let disk_info: Vec<DiskInfoDTO> = match DiskInfoDTO::get_latest(&pool, &interval_days).await {
+        Ok(disk_info) => disk_info,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let memory_info: Vec<MemoryInfoDTO> = match MemoryInfoDTO::get_latest(&pool, &interval_days).await {
+        Ok(memory_info) => memory_info,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let component_temperatures: Vec<ComponentTemperaturesDTO> = match ComponentTemperaturesDTO::get_latest(&pool, &interval_days).await {
+        Ok(component_temperature) => component_temperature,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let system_uptime: Vec<SystemUptimeDTO> = match SystemUptimeDTO::get_latest(&pool, &interval_days).await {
+        Ok(system_uptime) => system_uptime,
+        Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
+    };
+    
+    let metrics: MetricsDTO = MetricsDTO{
+        cpu_info,
+        disk_info,
+        memory_info,
+        swap_info,
+        system_uptime,
+        component_temperatures,
+    };
     Ok(Json(metrics))
 }
 

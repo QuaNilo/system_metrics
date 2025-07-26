@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{Executor, Postgres};
 use crate::traits::traits::Creatable;
 
@@ -128,7 +128,7 @@ impl Creatable for ComponentTemperatures {
     }
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct SystemUptime {
     pub seconds: i64,
     pub minutes: i64,

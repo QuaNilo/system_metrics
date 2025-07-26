@@ -1,6 +1,7 @@
 use time::{Duration, OffsetDateTime};
 use serde::Serialize;
 use sqlx::{Error, Executor, Postgres};
+use crate::data_classes::system_info::{CpuInfo, DiskInfo, MemoryInfo, SwapInfo};
 use crate::traits::traits::{Deletable, Readable, Updatable};
 
 
@@ -25,11 +26,11 @@ impl Readable for SwapInfoDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<SwapInfoDTO> = sqlx::query_as!(
             SwapInfoDTO,
             r#"
@@ -99,11 +100,11 @@ impl Readable for CpuInfoDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<CpuInfoDTO> = sqlx::query_as!(
             CpuInfoDTO,
             r#"SELECT id, timestamp, usage, name, frequency, vendor_id
@@ -174,11 +175,11 @@ impl Readable for DiskInfoDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<DiskInfoDTO> = sqlx::query_as!(
             DiskInfoDTO,
             r#"SELECT id, timestamp, name, total_space, available_space, used_space
@@ -247,11 +248,11 @@ impl Readable for MemoryInfoDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<MemoryInfoDTO> = sqlx::query_as!(
             MemoryInfoDTO,
             r#"SELECT id, timestamp, total_memory_mb, used_memory_mb
@@ -320,11 +321,11 @@ impl Readable for ComponentTemperaturesDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<ComponentTemperaturesDTO> = sqlx::query_as!(
             ComponentTemperaturesDTO,
             r#"SELECT id, timestamp, name, temperature, max_temperature, threshold_critical
@@ -395,11 +396,11 @@ impl Readable for SystemUptimeDTO {
         Ok(rows)
     }
 
-    async fn get_latest<'e, E>(executor: E, interval_days: i64) -> Result<Vec<Self>, Error>
+    async fn get_latest<'e, E>(executor: E, interval_days: &i64) -> Result<Vec<Self>, Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        let since = OffsetDateTime::now_utc() - Duration::days(interval_days);
+        let since = OffsetDateTime::now_utc() - Duration::days(*interval_days);
         let rows: Vec<SystemUptimeDTO> = sqlx::query_as!(
             SystemUptimeDTO,
             r#"SELECT id, timestamp, seconds, minutes, hours
@@ -445,4 +446,14 @@ impl Deletable for SystemUptimeDTO {
             .await?;
         Ok(())
     }
+}
+
+#[derive(Debug, Serialize)]
+pub struct MetricsDTO {
+    pub cpu_info: Vec<CpuInfoDTO>,
+    pub disk_info: Vec<DiskInfoDTO>,
+    pub memory_info: Vec<MemoryInfoDTO>,
+    pub swap_info: Vec<SwapInfoDTO>,
+    pub system_uptime: Vec<SystemUptimeDTO>,
+    pub component_temperatures: Vec<ComponentTemperaturesDTO>
 }
