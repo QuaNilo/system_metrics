@@ -1,8 +1,10 @@
 use argon2::{Argon2, PasswordHash, PasswordVerifier};
 use axum::{Json, Router};
-use axum::http::StatusCode;
+use axum::response::{Response};
+use axum::http::{header, StatusCode};
 use axum::routing::{post};
 use chrono::{DateTime, Duration, Utc};
+use cookie::{Cookie, CookieBuilder, SameSite};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow};
 use jsonwebtoken::{encode, EncodingKey, Header};
@@ -15,7 +17,7 @@ pub fn router() -> Router {
 }
 
 #[derive(Deserialize)]
-struct LoginPayload{
+pub struct LoginPayload{
     username: String,
     password: String,
 }
@@ -48,7 +50,7 @@ struct User{
 
 pub async fn login(
     Json(data): Json<LoginPayload>,
-) -> Result<Json<LoginResponse>, (StatusCode, String)>{
+) -> Result<Response, (StatusCode, String)>{
     let sql = SQL::new().await.map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
     let database_user: Option<User> = sqlx::query_as::<_, User>(
         "SELECT * FROM users WHERE username = $1"
@@ -71,12 +73,24 @@ pub async fn login(
     let token: String = create_jwt(&user)
         .await
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
-    Ok(Json({
-        LoginResponse{
-            token
-        }
 
-    }))
+    let cookie: CookieBuilder = Cookie::build(("auth_token", token))
+        .http_only(true)
+        .secure(true)
+        .same_site(SameSite::Lax)
+        .path("/")
+        .max_age(cookie::time::Duration::days(7));
+
+    let mut response: Response = Response::builder()
+        .status(StatusCode::NO_CONTENT)
+        .body(axum::body::Body::empty())
+        .unwrap();
+    response.headers_mut().insert(
+        header::SET_COOKIE,
+        cookie.to_string().parse().unwrap()
+    );
+    Ok(response)
+
 }
 
 async fn verify_password_blocking(

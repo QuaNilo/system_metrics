@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use chrono::{Utc};
 use time::{Duration, OffsetDateTime};
 use serde::Serialize;
 use sqlx::{Error, Executor, Postgres};

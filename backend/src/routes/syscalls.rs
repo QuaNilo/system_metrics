@@ -46,7 +46,7 @@ pub async fn get_system_uptime() -> Result<Json<SystemUptime>, (StatusCode, Stri
         .parse::<f64>()
         .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))? as i64;
 
-    let uptime_mins: i64 = (uptime_secs / 60);
+    let uptime_mins: i64 = uptime_secs / 60;
     let uptime_hours: i64 = uptime_mins / 60;
     let system_uptime = SystemUptime{
         seconds: uptime_secs,

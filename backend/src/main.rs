@@ -10,7 +10,7 @@ use tokio::net::TcpListener;
 use anyhow::{Result, Context};
 use fern::Dispatch;
 use chrono::Local;
-use log::{info, debug, error, warn, LevelFilter};
+use log::{info, error, LevelFilter};
 use tokio::time;
 use crate::config::{get_settings, init_settings};
 use crate::db::MIGRATOR;
@@ -91,6 +91,6 @@ async fn main() -> Result<()> {
 // TODO add middleware protection requiring token
 
 async fn cronjobs(){
-    run_system_jobs().await;
-    run_iagon_jobs().await;
+    let _ = run_system_jobs().await;
+    let _ = run_iagon_jobs().await;
 }
