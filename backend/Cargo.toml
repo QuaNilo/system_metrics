@@ -15,9 +15,6 @@ tokio = { version = "1.46.1", features = ["full"] }
 argon2 = "0.5.3"
 jsonwebtoken = "9.3.1"
 chrono = { version="0.4.41", features= ["serde"]}
-async-trait = "0.1.88"
 log = "0.4"
 fern = "0.6"
-once_cell = "1.21.3"
-headers = "0.4.1"
-cookie = "0.18.1"
+cookie = { version = "0.18.1", features = ["percent-encode"] }

@@ -11,7 +11,7 @@ pub struct SystemInfo {
 
 impl SystemInfo {
     pub async fn new() -> Self {
-        let mut system = System::new_with_specifics(
+        let system = System::new_with_specifics(
             RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
         );
         let pool = SQL::new().await.expect("Failed to grab db session").pool;

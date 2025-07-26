@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use serde::Serialize;
 use sqlx::{Executor, Postgres};
 use crate::traits::traits::Creatable;
@@ -17,7 +16,7 @@ pub struct SwapInfo {
     pub used_swap: i64,
 }
 
-#[async_trait]
+
 impl Creatable for SwapInfo {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -41,7 +40,6 @@ pub struct CpuInfo {
     pub vendor_id: String
 }
 
-#[async_trait]
 impl Creatable for CpuInfo {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -67,7 +65,6 @@ pub struct DiskInfo {
     pub used_space: i64,
 }
 
-#[async_trait]
 impl Creatable for DiskInfo {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -91,7 +88,6 @@ pub struct MemoryInfo {
     pub used_memory_mb: i64
 }
 
-#[async_trait]
 impl Creatable for MemoryInfo {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -115,7 +111,6 @@ pub struct ComponentTemperatures {
     pub threshold_critical: Option<f32>
 }
 
-#[async_trait]
 impl Creatable for ComponentTemperatures {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -140,7 +135,6 @@ pub struct SystemUptime {
     pub hours: i64,
 }
 
-#[async_trait]
 impl Creatable for SystemUptime {
     async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where

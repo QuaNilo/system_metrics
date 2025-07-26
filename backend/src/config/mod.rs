@@ -53,12 +53,25 @@ impl Iagon {
 #[derive(Debug)]
 pub struct App{
     pub secret: String,
+    pub auth_enabled: bool,
+    pub http_secure: bool,
 }
 
 impl App {
     fn from_env() -> Self {
         App {
             secret: env::var("APP_SECRET").expect("APP_SECRET must be set"),
+            auth_enabled: env::var("APP_AUTH_ENABLED")
+                .unwrap_or_else(|_| "true".to_string())
+                .parse::<bool>()
+                .unwrap_or(true)
+                ||
+                env::var("APP_ENVIRONMENT").expect("APP_ENVIRONMENT must be set") != "dev",
+            http_secure: env::var("APP_HTTP_SECURE")
+                .unwrap_or_else(|_| "true".to_string())
+                .parse::<bool>().unwrap_or(true)
+                || 
+                env::var("APP_ENVIRONMENT").expect("APP_ENVIRONMENT must be set") != "dev",
         }
     }
 }

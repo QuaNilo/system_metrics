@@ -1,4 +1,3 @@
-use async_trait::async_trait;
 use time::{Duration, OffsetDateTime};
 use serde::Serialize;
 use sqlx::{Error, Executor, Postgres};
@@ -13,7 +12,6 @@ pub struct SwapInfoDTO {
     pub used_swap: i64,
 }
 
-#[async_trait]
 impl Readable for SwapInfoDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -47,7 +45,6 @@ impl Readable for SwapInfoDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for SwapInfoDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -65,7 +62,6 @@ impl Updatable for SwapInfoDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for SwapInfoDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
@@ -90,7 +86,6 @@ pub struct CpuInfoDTO {
     pub vendor_id: String
 }
 
-#[async_trait]
 impl Readable for CpuInfoDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -123,7 +118,6 @@ impl Readable for CpuInfoDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for CpuInfoDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -143,7 +137,6 @@ impl Updatable for CpuInfoDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for CpuInfoDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
@@ -168,7 +161,6 @@ pub struct DiskInfoDTO {
     pub used_space: i64,
 }
 
-#[async_trait]
 impl Readable for DiskInfoDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -201,7 +193,6 @@ impl Readable for DiskInfoDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for DiskInfoDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -221,7 +212,6 @@ impl Updatable for DiskInfoDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for DiskInfoDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
@@ -244,7 +234,6 @@ pub struct MemoryInfoDTO {
     pub used_memory_mb: i64
 }
 
-#[async_trait]
 impl Readable for MemoryInfoDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -277,7 +266,6 @@ impl Readable for MemoryInfoDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for MemoryInfoDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -295,7 +283,6 @@ impl Updatable for MemoryInfoDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for MemoryInfoDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
@@ -320,7 +307,6 @@ pub struct ComponentTemperaturesDTO {
     pub threshold_critical: Option<f32>
 }
 
-#[async_trait]
 impl Readable for ComponentTemperaturesDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -354,7 +340,6 @@ impl Readable for ComponentTemperaturesDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for ComponentTemperaturesDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -374,7 +359,6 @@ impl Updatable for ComponentTemperaturesDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for ComponentTemperaturesDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where
@@ -398,7 +382,6 @@ pub struct SystemUptimeDTO {
     pub hours: i64,
 }
 
-#[async_trait]
 impl Readable for SystemUptimeDTO {
     async fn get_all<'e, E>(executor: E) -> Result<Vec<Self>, sqlx::Error>
     where
@@ -432,7 +415,6 @@ impl Readable for SystemUptimeDTO {
     }
 }
 
-#[async_trait]
 impl Updatable for SystemUptimeDTO {
     async fn update<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
     where
@@ -451,7 +433,6 @@ impl Updatable for SystemUptimeDTO {
     }
 }
 
-#[async_trait]
 impl Deletable for SystemUptimeDTO {
     async fn delete<'e, E>(id: i32, executor: E) -> Result<(), sqlx::Error>
     where

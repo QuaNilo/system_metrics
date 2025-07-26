@@ -3,12 +3,11 @@ use axum::{Json, Router};
 use axum::response::{Response};
 use axum::http::{header, StatusCode};
 use axum::routing::{post};
-use chrono::{DateTime, Duration, Utc};
+use chrono::{Duration, Utc};
 use cookie::{Cookie, CookieBuilder, SameSite};
-use serde::{Deserialize, Serialize};
-use sqlx::{FromRow};
 use jsonwebtoken::{encode, EncodingKey, Header};
 use crate::config::get_settings;
+use crate::data_classes::auth::{JwtPayload, LoginPayload, User};
 use crate::db::SQL;
 
 pub fn router() -> Router {
@@ -16,42 +15,11 @@ pub fn router() -> Router {
         .route("/login", post(login))
 }
 
-#[derive(Deserialize)]
-pub struct LoginPayload{
-    username: String,
-    password: String,
-}
-
-#[derive(Serialize)]
-struct LoginResponse{
-    token: String,
-}
-
-#[derive(Serialize)]
-struct JwtPayload{
-    sub: i32,
-    exp: usize,
-}
-
-
-
-#[derive(Clone, PartialEq, Debug, FromRow)]
-struct User{
-    user_id: i32,
-    username: String,
-    email: String,
-    password_hash: String,
-    role_id: i32,
-    created_at: DateTime<Utc>,
-    updated_at: DateTime<Utc>,
-    two_factor_enabled: Option<bool>,
-    two_factor_secret: Option<String>,
-}
-
 pub async fn login(
     Json(data): Json<LoginPayload>,
 ) -> Result<Response, (StatusCode, String)>{
     let sql = SQL::new().await.map_err(|e| (StatusCode::BAD_REQUEST, e.to_string()))?;
+    let config = get_settings();
     let database_user: Option<User> = sqlx::query_as::<_, User>(
         "SELECT * FROM users WHERE username = $1"
     )
@@ -76,7 +44,7 @@ pub async fn login(
 
     let cookie: CookieBuilder = Cookie::build(("auth_token", token))
         .http_only(true)
-        .secure(true)
+        .secure(config.app.http_secure)
         .same_site(SameSite::Lax)
         .path("/")
         .max_age(cookie::time::Duration::days(7));
