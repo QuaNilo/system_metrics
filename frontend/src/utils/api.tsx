@@ -15,3 +15,13 @@ export const login = async (payload: LoginPayload): Promise<boolean> =>  {
   );
   return response.status >= 200 && response.status < 300;
 };
+
+export const session = async (): Promise<boolean> => {
+  const response = await axios.post(`${API_URL}/auth/session`, {}, { withCredentials: true });
+  return response.status >= 200 && response.status < 300;
+};
+
+export const logout = async (): Promise<boolean> => {
+  const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+  return response.status >= 200 && response.status < 300;
+};
