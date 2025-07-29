@@ -8,6 +8,7 @@ use crate::traits::traits::{Deletable, Readable, Updatable};
 #[derive(Debug, Serialize)]
 pub struct SwapInfoDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub free_swap: i64,
     pub used_swap: i64,
@@ -80,6 +81,7 @@ impl Deletable for SwapInfoDTO {
 #[derive(Debug, Serialize)]
 pub struct CpuInfoDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub usage: f32,
     pub name: String,
@@ -155,6 +157,7 @@ impl Deletable for CpuInfoDTO {
 #[derive(Debug, Serialize)]
 pub struct DiskInfoDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub name: String,
     pub total_space: i64,
@@ -230,6 +233,7 @@ impl Deletable for DiskInfoDTO {
 #[derive(Debug, Serialize)]
 pub struct MemoryInfoDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub total_memory_mb: i64,
     pub used_memory_mb: i64
@@ -301,6 +305,7 @@ impl Deletable for MemoryInfoDTO {
 #[derive(Debug, Serialize)]
 pub struct ComponentTemperaturesDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub name: Option<String>,
     pub temperature: Option<f32>,
@@ -377,6 +382,7 @@ impl Deletable for ComponentTemperaturesDTO {
 #[derive(Debug, Serialize)]
 pub struct SystemUptimeDTO {
     pub id: i32,
+    #[serde(with = "time::serde::rfc3339")]
     pub timestamp: OffsetDateTime,
     pub seconds: i64,
     pub minutes: i64,

@@ -1,5 +1,7 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{Executor, Postgres};
+use time::OffsetDateTime;
 use crate::traits::traits::Creatable;
 
 #[derive(Debug, Serialize)]
@@ -18,13 +20,14 @@ pub struct SwapInfo {
 
 
 impl Creatable for SwapInfo {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO swap_info (free_swap, used_swap) VALUES ($1, $2)"#,
+        sqlx::query!(r#"INSERT INTO swap_info (free_swap, used_swap, timestamp) VALUES ($1, $2, $3)"#,
             self.free_swap,
             self.used_swap,
+            timestamp
         )
             .execute(executor)
             .await?;
@@ -41,15 +44,16 @@ pub struct CpuInfo {
 }
 
 impl Creatable for CpuInfo {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO cpu_info (usage, name, frequency, vendor_id) VALUES ($1, $2, $3, $4)"#,
+        sqlx::query!(r#"INSERT INTO cpu_info (usage, name, frequency, vendor_id, timestamp) VALUES ($1, $2, $3, $4, $5)"#,
             self.usage,
             self.name,
             self.frequency,
-            self.vendor_id
+            self.vendor_id,
+            timestamp
         )
             .execute(executor)
             .await?;
@@ -66,15 +70,16 @@ pub struct DiskInfo {
 }
 
 impl Creatable for DiskInfo {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO disk_info (name, total_space, available_space, used_space) VALUES ($1, $2, $3, $4)"#,
+        sqlx::query!(r#"INSERT INTO disk_info (name, total_space, available_space, used_space, timestamp) VALUES ($1, $2, $3, $4, $5)"#,
             self.name,
             self.total_space,
             self.available_space,
-            self.used_space
+            self.used_space,
+            timestamp,
         )
             .execute(executor)
             .await?;
@@ -89,13 +94,14 @@ pub struct MemoryInfo {
 }
 
 impl Creatable for MemoryInfo {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO memory_info (total_memory_mb, used_memory_mb) VALUES ($1, $2)"#,
+        sqlx::query!(r#"INSERT INTO memory_info (total_memory_mb, used_memory_mb, timestamp) VALUES ($1, $2, $3)"#,
             self.total_memory_mb,
             self.used_memory_mb,
+            timestamp,
         )
             .execute(executor)
             .await?;
@@ -112,15 +118,16 @@ pub struct ComponentTemperatures {
 }
 
 impl Creatable for ComponentTemperatures {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO component_temperatures (name, temperature, max_temperature, threshold_critical) VALUES ($1, $2, $3, $4)"#,
+        sqlx::query!(r#"INSERT INTO component_temperatures (name, temperature, max_temperature, threshold_critical, timestamp) VALUES ($1, $2, $3, $4, $5)"#,
             self.name,
             self.temperature,
             self.max_temperature,
             self.threshold_critical,
+            timestamp,
         )
             .execute(executor)
             .await?;
@@ -136,14 +143,15 @@ pub struct SystemUptime {
 }
 
 impl Creatable for SystemUptime {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database=Postgres> + Send
     {
-        sqlx::query!(r#"INSERT INTO system_uptime (seconds, minutes, hours) VALUES ($1, $2, $3)"#,
+        sqlx::query!(r#"INSERT INTO system_uptime (seconds, minutes, hours, timestamp) VALUES ($1, $2, $3, $4)"#,
             self.seconds,
             self.minutes,
             self.hours,
+            timestamp
         )
             .execute(executor)
             .await?;

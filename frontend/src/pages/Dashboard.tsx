@@ -1,12 +1,12 @@
 import React from "react";
 import Navbar from "../components/Navbar.tsx";
-import TopGrid from "../components/TopGrid.tsx";
+import MainGrid from "../components/grids/MainGrid.tsx";
 
 const Dashboard: React.FC = () => {
     return (
         <>
             <Navbar/>
-            <TopGrid/>
+            <MainGrid/>
         </>
     );
 }

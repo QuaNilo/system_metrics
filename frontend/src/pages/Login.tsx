@@ -1,10 +1,7 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import {login} from "../utils/api.tsx";
 import { useNavigate } from "react-router-dom";
-interface LoginForm {
-    username: string;
-    password: string;
-}
+import type {LoginForm} from "../interaces/forms/interfaces.ts";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();

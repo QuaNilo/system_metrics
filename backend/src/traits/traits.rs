@@ -1,7 +1,9 @@
+
 use sqlx::{Executor, Postgres};
+use time::OffsetDateTime;
 
 pub trait Creatable {
-    async fn create<'e, E>(&self, executor: E) -> Result<(), sqlx::Error>
+    async fn create<'e, E>(&self, executor: E, timestamp: OffsetDateTime) -> Result<(), sqlx::Error>
     where
         E: Executor<'e, Database = Postgres> + Send;
 }

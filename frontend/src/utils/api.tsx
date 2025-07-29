@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-export const API_URL = "http://localhost:50000";
+import type {MetricsDTO} from "../interaces/responses/interfaces.ts";
+import config from "../config.ts";
 
 interface LoginPayload {
   username: string;
@@ -9,7 +9,7 @@ interface LoginPayload {
 
 export const login = async (payload: LoginPayload): Promise<boolean> =>  {
   const response = await axios.post(
-      `${API_URL}/auth/login`,
+      `${config.apiUrl}/auth/login`,
       payload,
       { withCredentials: true }
   );
@@ -17,11 +17,20 @@ export const login = async (payload: LoginPayload): Promise<boolean> =>  {
 };
 
 export const session = async (): Promise<boolean> => {
-  const response = await axios.post(`${API_URL}/auth/session`, {}, { withCredentials: true });
+  const response = await axios.post(`${config.apiUrl}/auth/session`, {}, { withCredentials: true });
   return response.status >= 200 && response.status < 300;
 };
 
 export const logout = async (): Promise<boolean> => {
-  const response = await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
+  const response = await axios.post(`${config.apiUrl}/auth/logout`, {}, { withCredentials: true });
   return response.status >= 200 && response.status < 300;
 };
+
+export const system_info = async (): Promise<MetricsDTO> => {
+  const response = await axios.get(`${config.apiUrl}/system/info`);
+  if (response.status >= 200 && response.status < 300) {
+    return response.data;
+  } else {
+    throw new Error("Failed to fetch system info");
+  }
+}

@@ -19,7 +19,7 @@ pub fn router() -> Router {
 
 pub async fn system_info() -> Result<Json<MetricsDTO>, (StatusCode, String)>{
     let pool = SQL::new().await.map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?.pool;
-    let interval_days: i64 = 1;
+    let interval_days: i64 = 30;
     let swap_info: Vec<SwapInfoDTO> = match SwapInfoDTO::get_latest(&pool, &interval_days).await {
         Ok(swap_info) => swap_info,
         Err(e) => return Err((StatusCode::INTERNAL_SERVER_ERROR, e.to_string())),
