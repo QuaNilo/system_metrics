@@ -28,7 +28,7 @@ const Navbar: React.FC = () => {
                 </div>
                 <div id={"options"} className={"flex gap-2 items-center"}>
                     <button
-                        className={"px-4 py-1 border rounded"}
+                        className={"px-4 py-1 border rounded cursor-pointer"}
                         onClick={(e) => {
                             onLogout(e);
                         }}

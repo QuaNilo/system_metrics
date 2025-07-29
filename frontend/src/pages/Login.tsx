@@ -20,7 +20,6 @@ const Login: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
         const authorized = await login(formData);
         if (authorized) {
             navigate("/dashboard");
