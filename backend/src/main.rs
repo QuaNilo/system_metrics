@@ -1,10 +1,3 @@
-mod routes;
-mod utils;
-mod data_classes;
-mod config;
-mod db;
-mod traits;
-mod middlewares;
 use tower_http::cors::{CorsLayer, Any};
 use std::time::Duration;
 use tokio::net::TcpListener;
@@ -14,9 +7,9 @@ use chrono::Local;
 use axum::http::method::Method;
 use log::{info, error, LevelFilter};
 use tokio::time;
-use crate::config::{get_settings, init_settings};
-use crate::db::MIGRATOR;
-use crate::utils::cronjob::{run_system_jobs, run_iagon_jobs};
+use system_metrics::config::{get_settings, init_settings};
+use system_metrics::db::MIGRATOR;
+use system_metrics::utils::cronjob::{run_system_jobs, run_iagon_jobs};
 
 pub fn setup_logger() -> Result<(), Box<dyn std::error::Error>> {
     let config = get_settings();

@@ -16,6 +16,23 @@ impl Postgres {
 }
 
 #[derive(Debug)]
+pub struct Emailer{
+    pub from_address: String,
+    pub to_address: String,
+    pub app_password: String,
+}
+
+impl Emailer {
+    fn from_env() -> Self {
+        Emailer {
+            from_address: env::var("EMAILER_FROM_ADDRESS").expect("EMAILER_FROM_ADDRESS must be set"),
+            to_address: env::var("EMAILER_TO_ADDRESS").expect("EMAILER_TO_ADDRESS must be set"),
+            app_password: env::var("EMAILER_APP_PASSWORD").expect("EMAILER_APP_PASSWORD must be set"),
+        }
+    }
+}
+
+#[derive(Debug)]
 pub struct CronJob{
     pub interval: u64,
     pub enabled: bool,   
@@ -98,6 +115,7 @@ pub struct Settings {
     pub cronjob: CronJob,
     pub app: App,
     pub logging: Logging,   
+    pub emailer: Emailer, 
 }
 
 impl Settings {
@@ -107,7 +125,8 @@ impl Settings {
             iagon: Iagon::from_env(),
             cronjob: CronJob::from_env(),
             app: App::from_env(),
-            logging: Logging::from_env(),       
+            logging: Logging::from_env(),
+            emailer: Emailer::from_env(),
         }
     }
 }
