@@ -104,7 +104,8 @@ async fn main() -> Result<()> {
     Ok(())
 }
 // TODO Improve Cronjobs to update according to set variable from frontend
-
+// TODO Listen for SSH connections to machine and insert into DB and notify through email/sms
+// TODO Check for iagon get:status saying its Down and notify through email/sms
 async fn cronjobs(){
     let _ = run_system_jobs().await;
     let _ = run_iagon_jobs().await;
