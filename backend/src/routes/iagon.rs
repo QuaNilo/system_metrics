@@ -22,7 +22,7 @@ pub async fn iagon_node_response() -> Result<Json<IagonNodeResponse>, (StatusCod
     let get_node_status = settings.iagon.get_node_status.to_ascii_lowercase() == "true";
     let get_info = settings.iagon.get_info.to_ascii_lowercase() == "true";
     let status = if get_node_status {
-        match iagon_node_status(command.clone()).await {
+        match iagon_node_status(&command).await {
             Ok(status) => Some(status),
             Err((_, msg)) => {
                 eprintln!("Error getting node status: {}", msg);
@@ -33,7 +33,7 @@ pub async fn iagon_node_response() -> Result<Json<IagonNodeResponse>, (StatusCod
         None
     };
     let info = if get_info {
-        match iagon_node_info(command.clone()).await {
+        match iagon_node_info(&command).await {
             Ok(i) => Some(i),
             Err((_, msg)) => {
                 eprintln!("Error getting node info: {}", msg);
@@ -59,7 +59,7 @@ pub async fn cli_path() -> Result<String, (StatusCode, String)>{
     Ok(cli_path)
 }
 
-pub async fn iagon_node_status(command: String) -> Result<IagonNodeStatus, (StatusCode, String)> {
+pub async fn iagon_node_status(command: &str) -> Result<IagonNodeStatus, (StatusCode, String)> {
     let output = match Command::new("sh")
     .arg("-c")
     .arg(format!("{} {}", command, "get:status"))
@@ -82,7 +82,7 @@ pub async fn iagon_node_status(command: String) -> Result<IagonNodeStatus, (Stat
     }
 }
 
-pub async fn iagon_node_info(command: String) -> Result<IagonNodeInfo, (StatusCode, String)> {
+pub async fn iagon_node_info(command: &str) -> Result<IagonNodeInfo, (StatusCode, String)> {
     let output = match Command::new("sh")
     .arg("-c")
     .arg(format!("{} {}", command, "get:info"))

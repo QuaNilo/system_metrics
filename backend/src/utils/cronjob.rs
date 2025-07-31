@@ -1,4 +1,7 @@
 use time::OffsetDateTime;
+use crate::config::{get_settings, Settings};
+use crate::utils::emailer::{EmailBody, MAILER};
+use crate::data_classes::iagon_node::IagonNodeStatus;
 use crate::data_classes::system_info::{CpuInfo, DiskInfo, MemoryInfo, SwapInfo, SystemUptime};
 use crate::db::SQL;
 use crate::routes::iagon::{cli_path, iagon_node_response, iagon_node_status};
@@ -68,16 +71,28 @@ pub async fn run_system_jobs() -> Result<(), String>{
 }
 
 pub async fn run_iagon_jobs() -> Result<(), String>{
-    let _node_response = iagon_node_response()
-        .await
-        .map_err(|(status, msg)| format!("Node response error {}: {}", status, msg))?;
-
+    let config = get_settings();
     let command = cli_path()
         .await
         .map_err(|(status, msg)| format!("cli_path failed: {}: {}", status, msg))?;
+    
+    verify_node_status(&config, &command).await?;
+    Ok(())
+}
 
-    let _node_status = iagon_node_status(command)
+async fn verify_node_status(config: &Settings, command: &str) -> Result<(), String>{
+        let node_status: IagonNodeStatus = iagon_node_status(command)
         .await
         .map_err(|(status, msg)| format!("Node status error {}: {}", status, msg))?;
+    match node_status {
+        IagonNodeStatus::NodeStatusDown => {
+            MAILER.send_email(
+                &config.emailer.to_address,
+                &"Iagon Node Down",
+                &EmailBody::node_down()
+            )?;
+        }
+        IagonNodeStatus::NodeStatusUp => {}
+    }
     Ok(())
 }

@@ -1,12 +1,31 @@
 use lettre::{SmtpTransport, Transport, transport::smtp::authentication::Credentials};
 use lettre::Message;
 use std::sync::Arc;
+use chrono::Utc;
 use once_cell::sync::Lazy;
 use crate::config::get_settings;
 
 pub struct Mailer {
     sender: String,
     mailer: SmtpTransport
+}
+
+pub struct EmailBody;
+
+impl EmailBody {
+    pub fn ssh_login(user: &str, ip: &str, date: &str) -> String {
+        format!(
+            "SSH Login detected!\nUser: {}\nIP Address: {}\nDate: {}\n",
+            user, ip, date
+        )
+    }
+
+    pub fn node_down() -> String {
+        format!(
+            "Node is down!\nDate: {}\n\nTo fix access server and run './iag-cli-linux start'",
+            Utc::now().format("%Y-%m-%d %H:%M:%S")
+        )
+    }
 }
 
 impl Mailer {

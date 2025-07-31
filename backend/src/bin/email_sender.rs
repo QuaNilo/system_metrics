@@ -1,5 +1,5 @@
 use chrono::Utc;
-use system_metrics::utils::emailer::MAILER;
+use system_metrics::utils::emailer::{MAILER, EmailBody};
 use clap::{Parser, Subcommand};
 use system_metrics::config::Settings;
 
@@ -27,24 +27,6 @@ enum Commands {
         #[arg(value_name = "type")]
         arg_type: String,
     },
-}
-
-struct EmailBody;
-
-impl EmailBody {
-    pub fn ssh_login(user: &str, ip: &str, date: &str) -> String {
-        format!(
-            "SSH Login detected!\nUser: {}\nIP Address: {}\nDate: {}\n",
-            user, ip, date
-        )
-    }
-
-    pub fn other_event(example: &str) -> String {
-        format!(
-            "To implement\n{}",
-            example
-        )
-    }
 }
 
 fn main() {

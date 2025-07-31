@@ -8,7 +8,9 @@ use axum::http::method::Method;
 use log::{info, error, LevelFilter};
 use tokio::time;
 use system_metrics::config::{get_settings, init_settings};
+use system_metrics::db::SQL;
 use system_metrics::db::MIGRATOR;
+use system_metrics::routes;
 use system_metrics::utils::cronjob::{run_system_jobs, run_iagon_jobs};
 
 pub fn setup_logger() -> Result<(), Box<dyn std::error::Error>> {
@@ -49,7 +51,7 @@ async fn main() -> Result<()> {
     init_settings();
     setup_logger().expect("Failed to setup logger");
     let settings = get_settings();
-    let sql = db::SQL::new().await.context("Failed to create DB pool")?;
+    let sql = SQL::new().await.context("Failed to create DB pool")?;
 
     let cors = CorsLayer::new()
         .allow_origin(["http://localhost:5173".parse()?])
