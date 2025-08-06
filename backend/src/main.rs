@@ -1,4 +1,4 @@
-use tower_http::cors::{CorsLayer, Any};
+use tower_http::cors::{CorsLayer};
 use std::time::Duration;
 use tokio::net::TcpListener;
 use anyhow::{Result, Context};

@@ -7,3 +7,4 @@ Dashboard to get information about homeserver
 - Build FE dashboard
 - Create Instalation documentation
 - Create Instalation script
+- POPULATE EMAILER ENV VARS

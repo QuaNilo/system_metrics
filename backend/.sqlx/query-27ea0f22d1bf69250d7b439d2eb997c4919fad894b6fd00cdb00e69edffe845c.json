@@ -1,0 +1,18 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO component_temperatures (name, temperature, max_temperature, threshold_critical, timestamp) VALUES ($1, $2, $3, $4, $5)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Float4",
+        "Float4",
+        "Float4",
+        "Timestamptz"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "27ea0f22d1bf69250d7b439d2eb997c4919fad894b6fd00cdb00e69edffe845c"
+}
