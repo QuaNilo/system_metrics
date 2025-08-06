@@ -1,7 +1,14 @@
 import React from "react";
 import InfoBox from "../child-components/InfoBox.tsx";
+import type {MetricsDTO} from "../../interaces/responses/interfaces.ts";
 
-const TopGrid: React.FC = () => {
+interface TopGridProps {
+    systemInfo: MetricsDTO;
+}
+
+const TopGrid: React.FC<TopGridProps> = ({systemInfo}) => {
+
+
     return (
         <>
             <div className={"grid grid-cols-6 space-x-2"}>
