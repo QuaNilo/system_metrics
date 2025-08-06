@@ -5,12 +5,12 @@ interface InfoData {
     value: string;
 }
 
-const InfoBox: React.FC = (data: InfoData) => {
+const InfoBox: React.FC<InfoData> = ({name, value}) => {
     return (
         <>
             <div className={"border shadow-md rounded-md p-3 m-2"}>
-                <div className={"text-lg font-bold flex justify-center"}>{data.value}</div>
-                <div className={"font-light text-sm flex justify-center mt-2"}>{data.name}</div>
+                <div className={"text-lg font-bold flex justify-center"}>{value}</div>
+                <div className={"font-light text-sm flex justify-center mt-2"}>{name}</div>
             </div>
         </>
     )

@@ -262,7 +262,7 @@ impl Readable for MemoryInfoDTO {
             r#"SELECT id, timestamp, total_memory_mb, used_memory_mb
             FROM memory_info
             WHERE timestamp > $1
-            ORDER BY timestamp DESC LIMIT 1"#,
+            ORDER BY timestamp DESC"#,
             since
         )
         .fetch_all(executor)
